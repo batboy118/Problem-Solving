@@ -1,0 +1,4 @@
+﻿  소스.cpp
+c:\git\problem solving\_etc\우아한테크코스\3_청개구리\3_청개구리\소스.cpp(8): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+  3_청개구리.vcxproj -> C:\Git\Problem Solving\_ETC\우아한테크코스\3_청개구리\Debug\3_청개구리.exe
+  3_청개구리.vcxproj -> C:\Git\Problem Solving\_ETC\우아한테크코스\3_청개구리\Debug\3_청개구리.pdb (Full PDB)
