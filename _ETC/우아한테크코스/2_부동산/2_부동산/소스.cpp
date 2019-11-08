@@ -4,57 +4,28 @@ using namespace std;
 
 
 bool solution(int lands[][4] , int wells [][4] , int point[] ){
-	bool answer = false;
-	
+	bool ans = false;
 	int num_lands = sizeof(lands) / 4;
 	int num_wells = sizeof(wells) / 4;
 
-	for (int i = 0; i<num_lands; i++) {       //´Ù¸¥ »ç¶÷ÀÇ ¶¥ÀÌ¶û °ãÄ¡´ÂÁö CheckÇØ¼­ °ãÄ¡¸é false ¸®ÅÏ
-		if ((point[0] <= lands[i][0] && point[3] >= lands[i][0]) || (point[0] <= lands[i][3] && point[3] >= lands[i][3])) 
-		{
-			if ((point[1] > lands[i][1] && point[3] < lands[i][1]) || (point[1] > lands[i][3] && point[3] < lands[i][3])) return false;
-			else if ((point[1] < lands[i][1] && point[3] > lands[i][1]) || (point[1] < lands[i][3] && point[3] > lands[i][3])) return false;
-		}
-		else if ((point[0] >= lands[i][0] && point[0] <= lands[i][1]) || (point[1] >= lands[i][0] && point[1] <= lands[i][1]))
-		{
-			if ((point[1] > lands[i][1] && point[3] < lands[i][1]) || (point[1] > lands[i][3] && point[3] < lands[i][3])) return false;
-			else if ((point[1] < lands[i][1] && point[3] > lands[i][1]) || (point[1] < lands[i][3] && point[3] > lands[i][3])) return false;
-		}
+	for (int i = 0; i<num_lands; i++) {       //¶¥ÀÌ¶û °ãÄ¡¸é false ¸®ÅÏ
+		if ((point[0] >= lands[i][2] || point[2] <= lands[i][0] || point[1] >= lands[i][3] || point[3] <= lands[i][1]) == false) return false;
 	}
 
 	for (int i = 0; i<num_wells; i++) {   //½Ä¼ö¿øÀÌ °ãÄ¡¸é true!
-		if ((point[0] < wells[i][0] && point[3] > wells[i][0]) || (point[0] < wells[i][3] && point[3] > wells[i][3]))
-		{
-			if ((point[1] > wells[i][1] && point[3] < wells[i][1]) || (point[1] > wells[i][3] && point[3] < wells[i][3])) { 
-				answer = true; 
-				break; 
-			}
-			else if ((point[1] < wells[i][1] && point[3] > wells[i][1]) || (point[1] < wells[i][3] && point[3] > wells[i][3])) { 
-				answer = true;
-				break; }
-		}
-		else if ((point[0] > wells[i][0] && point[0] < wells[i][1]) || (point[1] > wells[i][0] && point[1] < wells[i][1]))
-		{
-			if ((point[1] > wells[i][1] && point[3] < wells[i][1]) || (point[1] > wells[i][3] && point[3] < wells[i][3])) { 
-				answer = true; 
-				break; }
-			else if ((point[1] < wells[i][1] && point[3] > wells[i][1]) || (point[1] < wells[i][3] && point[3] > wells[i][3])) { 
-				answer = true; 
-				break; }
-		}
-		
+		if((point[0] >= wells[i][2] || point[2] <= wells[i][0] || point[1] >= wells[i][3] || point[3] <= wells[i][1]) == false) return true;
 	}
 
-	return answer;
+	return ans;
 }
 
 
 
 int main() {
 
-	int lands1 [][4]  = { { 0,9,20,10 },{ 10,20,20,30 },{ 10,10,20,11 } };
-	int wells1 [][4]  = { { 20,40,30,50 },{ 25,25,40,40 } };
-	int points1 []  = { 18,5,36,36 };
+	int lands1 [][4]  = { { 10,0,30,5 },{ 0,30,20,50 },{ 30,30,40,40 } };
+	int wells1 [][4]  = { { 10,10,30,30 },{ 40,10,50,20 } };
+	int points1 []  = { 15,15,25,25 };
 	cout << "1¹ø¹®Á¦°á°ú:" << solution(lands1, wells1, points1)<< endl;
 	
 	
