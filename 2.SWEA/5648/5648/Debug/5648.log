@@ -1,0 +1,5 @@
+﻿  소스.cpp
+d:\2. 공부자료\dev\til\algorithm\swea\5648\5648\소스.cpp(34): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+d:\2. 공부자료\dev\til\algorithm\swea\5648\5648\소스.cpp(70): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+  5648.vcxproj -> D:\2. 공부자료\Dev\TIL\Algorithm\SWEA\5648\Debug\5648.exe
+  5648.vcxproj -> D:\2. 공부자료\Dev\TIL\Algorithm\SWEA\5648\Debug\5648.pdb (Full PDB)

@@ -1,0 +1,4 @@
+﻿  소스.cpp
+d:\2. 공부자료\programming study\algorithm_ps_c++\boj11726\boj11726\소스.cpp(10): warning C4101: 'temp' :참조되지 않은 지역 변수입니다.
+  BOJ11726.vcxproj -> D:\2. 공부자료\Programming Study\Algorithm_PS_C++\BOJ11726\Debug\BOJ11726.exe
+  BOJ11726.vcxproj -> D:\2. 공부자료\Programming Study\Algorithm_PS_C++\BOJ11726\Debug\BOJ11726.pdb (Full PDB)
