@@ -1,7 +1,0 @@
-﻿  소스.cpp
-d:\git\problem-solving\_etc\우아한테크코스\6_티케팅\6_티케팅\소스.cpp(36): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-d:\git\problem-solving\_etc\우아한테크코스\6_티케팅\6_티케팅\소스.cpp(49): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-d:\git\problem-solving\_etc\우아한테크코스\6_티케팅\6_티케팅\소스.cpp(90): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-d:\git\problem-solving\_etc\우아한테크코스\6_티케팅\6_티케팅\소스.cpp(108): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-  6_티케팅.vcxproj -> D:\Git\Problem-Solving\_ETC\우아한테크코스\6_티케팅\Debug\6_티케팅.exe
-  6_티케팅.vcxproj -> D:\Git\Problem-Solving\_ETC\우아한테크코스\6_티케팅\Debug\6_티케팅.pdb (Full PDB)
