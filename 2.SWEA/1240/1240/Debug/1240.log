@@ -1,5 +1,0 @@
-﻿  소스.cpp
-d:\2. 공부자료\programming study\algorithm_ps_c++\swea\1240\1240\소스.cpp(50): warning C4101: 'si' :참조되지 않은 지역 변수입니다.
-d:\2. 공부자료\programming study\algorithm_ps_c++\swea\1240\1240\소스.cpp(33): warning C4715: 'matching': 모든 제어 경로에서 값을 반환하지는 않습니다.
-  1240.vcxproj -> D:\2. 공부자료\Programming Study\Algorithm_PS_C++\SWEA\1240\Debug\1240.exe
-  1240.vcxproj -> D:\2. 공부자료\Programming Study\Algorithm_PS_C++\SWEA\1240\Debug\1240.pdb (Full PDB)
