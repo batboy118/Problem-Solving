@@ -1,80 +1,187 @@
-#include <iostream>
+#include<iostream>
+#include<vector>
 
+#define endl "\n"
+#define MAX 12
+#define CHESS_MAX 10
 using namespace std;
 
-int ans = 0;
-int dice[10];
-int mal[4] = { 0, }; //말의 위치를 기록
-int map[33] = { 0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,13,16,19,22,24,28,27,26,25,30,35,40,0 };
-bool visit[33] = { 0, };
+struct CHESS
+{
+    int x;
+    int y;
+    int dir;
+};
 
-void dfs(int turn, int score) {
+int N, K, Answer;
+int MAP[MAX][MAX];
+vector<int> MAP_State[MAX][MAX];
+CHESS Chess[CHESS_MAX];
 
-	if (turn == 10) {
-		if (score > ans) ans = score;
-		return;
-	}
+int dx[] = { 0, 0, 0, -1, 1 };
+int dy[] = { 0, 1, -1, 0, 0 };
 
-	for (int i = 0; i < 4; i++) {
-		int pre = mal[i];
-		int cur = mal[i]; //현재 말의 출발 위치
-		int size = dice[turn];
-
-		///파란 화살표 이동 조작
-		if (cur == 5) {
-			cur = 20;
-			size--;
-		}
-		else if (cur == 10) {
-			cur = 23;
-			size--;
-		}
-		else if (cur == 15) {
-			cur = 25;
-			size--;
-		}
-
-		//이동
-		while (size--) {
-			if (cur == 19) {
-				cur = 31;//40
-			}
-			else if (cur == 22) {
-				cur = 28; //25
-			}
-			else if (cur == 24) {
-				cur = 28; //25
-
-			}
-			else if (cur == 27) {
-				cur = 28; //25
-
-			}
-			else {
-				cur++;
-			}
-		}
-
-		if (cur > 31) cur = 32; //도착
-
-		if (visit[cur] && cur < 32) continue;
-
-		visit[pre] = 0;
-		visit[cur] = 1;
-		mal[i] = cur;
-		dfs(turn + 1, score + map[cur]);
-		mal[i] = pre;
-		visit[pre] = 1;
-		visit[cur] = 0;
-	}
+void Print()
+{
+    for (int i = 0; i < N; i++)
+    {
+        for (int j = 0; j < N; j++)
+        {
+            cout << MAP_State[i][j].size() << " ";
+        }
+        cout << endl;
+    }
+    cout << "#######################################################################" << endl;
+}
+void Input()
+{
+    cin >> N >> K;
+    for (int i = 0; i < N; i++)
+    {
+        for (int j = 0; j < N; j++)
+        {
+            cin >> MAP[i][j];
+        }
+    }
+    for (int i = 0; i < K; i++)
+    {
+        int x, y, d; cin >> x >> y >> d;
+        x--; y--;
+        Chess[i] = { x, y, d };
+        MAP_State[x][y].push_back(i);
+    }
 }
 
-int main() {
-	for (int i = 0; i < 10; i++) {
-		cin >> dice[i];
-	}
+int Find_Delete_Num(int x, int y, int Chess_Num)
+{
+    /* 해당 말을 옮긴 후, 기존 좌표에서 몇 번 삭제를 해야 하는지 찾는 함수. */
+    int Cnt = 0;
+    for (int i = MAP_State[x][y].size() - 1; i >= 0; i--)
+    {
+        if (MAP_State[x][y][i] == Chess_Num) break;
+        Cnt++;
+    }
+    return Cnt + 1;
+}
 
-	dfs(0,0);
-	cout << ans << "\n";
-	return 0;
+int Reverse_Dir(int Num)
+{
+    int Dir = Chess[Num].dir;
+    if (Dir == 1) return 2;
+    else if (Dir == 2) return 1;
+    else if (Dir == 3) return 4;
+    else if (Dir == 4) return 3;
+}
+
+void MoveChess(int x, int y, int nx, int ny, int Chess_Num, int Pos, int Ms)
+{
+    if (Ms == 0)
+    {
+        for (int i = Pos; i < MAP_State[x][y].size(); i++)
+        {
+            MAP_State[nx][ny].push_back(MAP_State[x][y][i]);
+            int Idx = MAP_State[x][y][i];
+            Chess[Idx].x = nx;
+            Chess[Idx].y = ny;
+        }
+        int Delete_Num = Find_Delete_Num(x, y, Chess_Num);
+        for (int i = 0; i < Delete_Num; i++) MAP_State[x][y].pop_back();
+    }
+    else if (Ms == 1)
+    {
+        for (int i = MAP_State[x][y].size() - 1; i >= Pos; i--)
+        {
+            MAP_State[nx][ny].push_back(MAP_State[x][y][i]);
+            int Idx = MAP_State[x][y][i];
+            Chess[Idx].x = nx;
+            Chess[Idx].y = ny;
+        }
+        int Delete_Num = Find_Delete_Num(x, y, Chess_Num);
+        for (int i = 0; i < Delete_Num; i++) MAP_State[x][y].pop_back();
+    }
+    else if (Ms == 2)
+    {
+        int Dir = Reverse_Dir(Chess_Num);
+        Chess[Chess_Num].dir = Dir;
+        int nnx = x + dx[Dir];
+        int nny = y + dy[Dir];
+
+        if (nnx >= 0 && nny >= 0 && nnx < N && nny < N)
+        {
+            if (MAP[nnx][nny] != 2) MoveChess(x, y, nnx, nny, Chess_Num, Pos, MAP[nnx][nny]);
+        }
+    }
+}
+
+int Find_Position(int x, int y, int Idx)
+{
+    /* 해당 말이 몇 번째에 위치하고 있는지 찾아서 return 하는 함수. */
+    for (int i = 0; i < MAP_State[x][y].size(); i++)
+    {
+        if (MAP_State[x][y][i] == Idx) return i;
+    }
+}
+
+bool Check_State()
+{
+    for (int i = 0; i < K; i++)
+    {
+        int x = Chess[i].x;
+        int y = Chess[i].y;
+        if (MAP_State[x][y].size() >= 4) return true;
+    }
+    return false;
+}
+
+void Solution()
+{
+    bool Flag = false;
+    int Time = 0;
+    while (1)
+    {
+        if (Time > 1000) break;
+
+        for (int i = 0; i < K; i++)
+        {
+            int x = Chess[i].x;
+            int y = Chess[i].y;
+            int dir = Chess[i].dir;
+
+            int nx = x + dx[dir];
+            int ny = y + dy[dir];
+
+            int Pos = Find_Position(x, y, i);
+            if (nx >= 0 && ny >= 0 && nx < N && ny < N) MoveChess(x, y, nx, ny, i, Pos, MAP[nx][ny]);
+            else MoveChess(x, y, nx, ny, i, Pos, 2);
+
+            if (Check_State() == true)
+            {
+                Flag = true;
+                break;
+            }
+        }
+        if (Flag == true) break;
+        Time++;
+    }
+
+    if (Flag == true) cout << Time + 1 << endl;
+    else cout << -1 << endl;
+}
+
+void Solve()
+{
+    Input();
+    Solution();
+}
+
+int main(void)
+{
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
+
+//    freopen("Input.txt", "r", stdin);
+    Solve();
+
+    return 0;
 }
