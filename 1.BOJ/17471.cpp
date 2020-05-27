@@ -25,7 +25,7 @@ vector<int> S2;
 
 bool check()
 {
-	//S1 üũ
+	//S1 ??
 
 	for (int i = 0; i < N; i++)
 	{
@@ -49,7 +49,7 @@ bool check()
 		}
 	}
 
-	//S2 üũ
+	//S2 ??
 
 	for (int i = 0; i < N; i++)
 	{

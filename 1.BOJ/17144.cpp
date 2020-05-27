@@ -91,7 +91,7 @@ void clean() {
 int main() {
 
 	cin >> R >> C >> T;
-	 
+
 	int AirconCnt = 0;
 
 	for (int i = 0; i < R; i++) {
@@ -114,7 +114,7 @@ int main() {
 
 	for (int i = 0; i < T; i++) {
 		delta();
-		
+
 #ifdef DEB
 		cout << i<<"번째 delta"<<endl;
 		for (int i = 0; i < R; i++) {
@@ -125,11 +125,11 @@ int main() {
 		}
 
 #endif // DEB
-		
+
 
 		update();
-		
-		
+
+
 #ifdef DEB
 		cout << i << "번째 update" << endl;
 		for (int i = 0; i < R; i++) {
