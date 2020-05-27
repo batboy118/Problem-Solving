@@ -1,6 +1,8 @@
 #include <iostream>
 #include <limits.h>
 #include <string.h>
+#include <vector>
+#include <queue>
 
 using namespace std;
 int N,M;
@@ -94,35 +96,43 @@ void buildBridge(){
     }
 }
 
-int cc[7];
 void dfs(int depth){
     if(depth == cnt){
-		memset(cc, 0, sizeof(cc));
+        vector<int> cc[7];
         int temp = 0;
         for(int i = 1; i <= cnt; i ++){
             for(int j = 1; j <= cnt; j ++){
                 if(visit[i][j]){
-					cc[i] = 1;
-					cc[j] = 1;
+                    cc[i].push_back(j);
+                    cc[j].push_back(i);
                     temp += Icheck[i][j];
 				}
             }
         }
 		for(int i = 1; i <= cnt; i++){
-			if(cc[i] == 0) return;
+			if(cc[i].size() == 0) return;
+		}
+        int now = 1;
+        queue<int> q;
+        int visitCheck[7];
+        memset(visitCheck, 0 , sizeof(visitCheck));
+        visitCheck[now] = 1;
+        q.push(now);
+        while(q.size()){
+            now = q.front();
+            q.pop();
+            for(int i = 0; i < cc[now].size(); i++){
+                if(visitCheck[cc[now][i]] == 0){
+                    q.push(cc[now][i]);
+                    visitCheck[q.back()] = 1;
+                }
+            }
+		}
+        for(int i = 1; i <= cnt; i++){
+			if(visitCheck[i]== 0) return;
 		}
         if(temp < ans)
             ans = temp;
-		if(temp == 10){
-			for(int i = 1; i <= cnt; i ++){
-            	for(int j = 1; j <= cnt; j ++){
-                	if(visit[i][j]){
-						cout << i << " = > " << j << endl;
-					}
-				}
-			}
-			cout << endl;
-		}
     }
     for(int i = 1; i <= cnt; i++){
         if(Icheck[depth][i] && visit[i][depth] == 0){
@@ -158,21 +168,6 @@ int main(){
     buildBridge();
     getAns();
 
-    cout << endl;
-    for(int i = 0; i < N; i++){
-        for(int j = 0; j < M; j++){
-              cout << o[i][j];
-        }
-        cout << endl;
-    }
-    cout << endl;
-    for(int i = 1; i <= cnt; i++){
-        for(int j = 1; j <= cnt; j++){
-              cout << Icheck[i][j];
-        }
-        cout << endl;
-    }
-    cout << endl;
     cout << ans;
     return 0;
 }

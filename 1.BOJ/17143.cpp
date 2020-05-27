@@ -1,123 +1,104 @@
 #include <iostream>
 #include <vector>
 #include <string.h>
+#include <iomanip>
 
 using namespace std;
 
-int  R,C,M;
-struct info{
+int  R, C, M;
+struct info {
 	int size;
 	int speed;
 	int dir;
 	int r;
 	int c;
 };
-int map[102][102];
+int map[103][103];
 int ans;
 
 vector <info> shark;
 
-void fish(int col){
+int nd[5] = { 0, 2, 1, 4, 3 };
+int nc[5] = { 0, 0, 0, 1, -1 };
+int nr[5] = { 0, -1, 1, 0, 0 };
 
-}
-
-void move(){
-	int cnt = 0;
-	vector <int> eraseList;
-	for(vector<info>::iterator i = shark.begin(); i != shark.end(); i++){
-		map[i->r][i->c] = -1;
-		int d = 1;
-		if(i->dir == 1 || i->dir == 4) d = -1;
-		if(i->dir > 2){
-			int temp = i->c + (d * i->speed);
-			if(temp < 1 || temp > C){
-				int gap;
-				if(temp < 1) {
-					gap = (temp * -1) + 1;
-					if(gap + 1 > C) {
-						gap = 2 * C - 2 + gap;
-						i->c = gap;
-					} else{
-						i->c = gap;
-						i->dir = i->dir == 3 ? 4 : 3;
-					}
-				}
-			}
-			else {
-				i->c = temp;
-			}
-			if(i->c == 1) i->dir = 3;
-			else if(i->c == C) i->dir = 4;
-			if(map[i->r][i->c] == -1)
-				map[i->r][i->c] = cnt;
-			else{
-				if(shark[map[i->r][i->c]].size > i->size)
-					eraseList.push_back(cnt);
-				else{
-					eraseList.push_back(map[i->r][i->c]);
-					map[i->r][i->c] = cnt;
-				}
-			}
+void fish(int col) {
+	for (int i = 1; i <= R; i++) {
+		if (map[i][col] != -1) {
+			ans += shark[map[i][col]].size;
+			shark.erase(shark.begin() + map[i][col]);
+			break;
 		}
-		else {
-			int temp = i->r + (d * i->speed);
-			if(temp < 1 || temp > R){
-				int gap;
-				if(temp < 1) {
-					gap = (temp * -1) + 1;
-					if(gap + 1 > R) {
-						gap = 2 * R - 2 + gap;
-						i->r = gap;
-					} else{
-						i->r = gap;
-						i->dir = i->dir == 1 ? 2 : 1;
-					}
-				}
-			}
-			else {
-				i->r = temp;
-			}
-			if(i->r == 1) i->dir = 2;
-			else if(i->r == R) i->dir = 1;
-			if(map[i->r][i->c] == -1)
-				map[i->r][i->c] = cnt;
-			else{
-				if(shark[map[i->r][i->c]].size > i->size)
-					eraseList.push_back(cnt);
-				else{
-					eraseList.push_back(map[i->r][i->c]);
-					map[i->r][i->c] = cnt;
-				}
-			}
-		}
-		cnt++;
 	}
 }
 
-int main(){
+void move() {
+	for (unsigned int i = 0; i < shark.size(); i++) {
+		int cc = shark[i].c;
+		int cr = shark[i].r;
+		int cnt = shark[i].speed;
+		int dir = shark[i].dir;
+		int sz = shark[i].size;
+		while (cnt--) {
+			cc += nc[dir];
+			cr += nr[dir];
+			if (cc == 1 && nc[dir]) dir = 3;
+			else if(cc == C && nc[dir]) dir = 4;
+			else if(cr == 1 && nr[dir]) dir = 2;
+			else if(cr == R && nr[dir]) dir = 1;
+		}
+		shark[i].dir = dir;
+		shark[i].c = cc;
+		shark[i].r = cr;
+		if (map[cr][cc] == -1) {
+			map[cr][cc] = i;
+		}
+		else {
+			if (shark[map[cr][cc]].size > sz) {
+				shark.erase(shark.begin() + i--);
+			}
+			else {
+				for(int j = map[cr][cc] + 1; j < i; j++){
+					map[shark[j].r][shark[j].c]--;
+				}
+				shark.erase(shark.begin() + map[cr][cc]);
+				map[cr][cc] = --i;
+			}
+		}
+	}
+}
+
+int main() {
 	cin >> R >> C >> M;
 	memset(map, -1, sizeof(map));
-	for(int i = 0; i < M; i++){
+	shark.reserve(10005);
+	for (int i = 0; i < M; i++) {
 		info temp;
 		cin >> temp.r >> temp.c >> temp.speed >> temp.dir >> temp.size;
 		map[temp.r][temp.c] = i;
-		if(temp.dir > 2)
+		if (temp.dir > 2)
 			temp.speed = temp.speed % (2 * C - 2);
 		else
 			temp.speed = temp.speed % (2 * R - 2);
+		if(temp.dir > 2 && temp.c == 1) temp.dir = 3;
+		else if(temp.dir > 2 && temp.c == C) temp.dir = 4;
+		else if(temp.dir < 3 && temp.r == 1) temp.dir = 2;
+		else if(temp.dir < 3 && temp.r == R) temp.dir = 1;
 		shark.push_back(temp);
 	}
-	for(int col = 1; col <= C; col++){
+
+	ans = 0;
+	for (int col = 1; col <= C; col++) {
 		fish(col);
-		if(col == C) break;
-
-		for(int i = 0; i < R; i++){
-			for(int j = 0; j < C; i++){
-				printf("%3d ", map[i][j]);
-			}
-			printf("\n");
-		}
-
+		// cout << endl;
+		// for (int i = 1; i <= R; i++) {
+		// 	for (int j = 1; j <= C; j++) {
+		// 		cout << setw(3) << map[i][j] << ' ';
+		// 	}
+		// 	cout << endl;
+		// }
+		if (col == C) break;
+		memset(map, -1, sizeof(map));
 		move();
 	}
 	cout << ans;
