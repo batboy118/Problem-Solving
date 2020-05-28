@@ -1,154 +1,121 @@
 #include <iostream>
 #include <vector>
-#include <cmath>
-
-#define endl '\n'
-#define MAX 10
+#include <queue>
+#include <algorithm>
+#include <limits.h>
+#include <string.h>
 
 using namespace std;
 
-struct info
-{
-	int man;
-	int cnt;
-	bool check;
-};
-
-int ans;
 int N;
-int temp;
-int number[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-info Section[10];
-vector<vector<int>> Next(10, vector<int>());
-vector<int> S1;
-vector<int> S2;
+int ans = INT_MAX;
+vector<int> g[10];
+int p[10];
+int comb[10];
+int s1[10];
+int s2[10];
+int check[10];
 
-bool check()
-{
-	//S1 ??
-
-	for (int i = 0; i < N; i++)
-	{
-		Section[i].check = false;
+int check_valid() {
+	memset(check, 0, sizeof(check));
+	queue <int> q;
+	for (int i = 0; i < N; i++) {
+		if (s1[i]) {
+			q.push(i);
+			check[i] = 1;
+			break;
+		}
 	}
-
-	if (S1.size() > 1)
-	{
-		for (int i = 0; i < S1.size(); i++)
-		{
-			for (int j = 0; j < Section[S1[i]].cnt; j++)
-			{
-				Section[Next[S1[i]][j]].check = true;
+	while (!q.empty()) {
+		int cur = q.front();
+		int len = q.size();
+		q.pop();
+		while (len--) {
+			for (int i = 0; i < g[cur].size(); i++) {
+				int next = g[cur][i];
+				if (check[next] || s1[next] == 0) continue;
+				check[next] = 1;
+				q.push(next);
 			}
 		}
-
-		for (int i = 0; i < S1.size(); i++)
-		{
-			if (Section[S1[i]].check == false)
-				return false;
+	}
+	for (int i = 0; i < N; i++) {
+		if (s2[i]) {
+			q.push(i);
+			check[i] = 1;
+			break;
 		}
 	}
-
-	//S2 ??
-
-	for (int i = 0; i < N; i++)
-	{
-		Section[i].check = false;
-	}
-
-	if (S2.size() > 1)
-	{
-
-		for (int i = 0; i < S2.size(); i++)
-		{
-			for (int j = 0; j < Section[S2[i]].cnt; j++)
-			{
-				Section[Next[S2[i]][j]].check = true;
+	while (!q.empty()) {
+		int cur = q.front();
+		int len = q.size();
+		q.pop();
+		while (len--) {
+			for (int i = 0; i < g[cur].size(); i++) {
+				int next = g[cur][i];
+				if (check[next] || s2[next] == 0) continue;
+				check[next] = 1;
+				q.push(next);
 			}
 		}
-
-		for (int i = 0; i < S2.size(); i++)
-		{
-			if (Section[S2[i]].check == false)
-				return false;
-		}
 	}
-
-	int SUM1 = 0;
-	int SUM2 = 0;
-
-	for (int i = 0; i < S1.size(); i++)
-	{
-		SUM1 += Section[S1[i]].man;
+	for (int i = 0; i < N; i++) {
+		if (check[i] == 0) return 0;
 	}
-	for (int i = 0; i < S2.size(); i++)
-	{
-		SUM2 += Section[S2[i]].man;
-	}
-
-	temp = abs(SUM1 - SUM2);
-
-	return true;
+	return 1;
 }
 
-void solve()
-{
-	for (int i = 0; i < (1 << N); i++)
-	{
-		S1.clear();
-		S2.clear();
-		for (int j = 0; j < N; j++)
-		{
-			if (i & (1 << j))
-			{
-				S1.push_back(j);
-			}
-			else
-			{
-				S2.push_back(j);
-			}
+int get_diff() {
+	int sum1 = 0;
+	int sum2 = 0;
+	for (int i = 0; i < N; i++) {
+		if (s1[i]) sum1 += p[i];
+		else sum2 += p[i];
+	}
+	return abs(sum1 - sum2);
+}
+
+int main() {
+	cin >> N;
+	for (int i = 0; i < N; i++) {
+		cin >> p[i];
+	}
+	for (int i = 0; i < N; i++) {
+		int cnt;
+		cin >> cnt;
+		for (int j = 0; j < cnt; j++) {
+			int temp;
+			cin >> temp;
+			g[i].push_back(temp - 1);
 		}
-		if (S1.size() == 0 || S2.size() == 0)
-			continue;
-		else
-		{
-			temp = 0;
-			if (check())
-			{
-				if (temp < ans)
-				{
-					ans = temp;
+	}
+	for (int i = 0; i < N - 1; i++) {
+		s2[N - 1] = 1;
+		s1[N - 1] = 0;
+		for (int j = 0; j < N - 1; j++) {
+			if (i < j) comb[j] = 1;
+			else comb[j] = 0;
+		}
+		do {
+			for (int j = 0; j < N - 1; j++) {
+				if (comb[j]) {
+					s2[j] = 1;
+					s1[j] = 0;
+				}
+				else {
+					s1[j] = 1;
+					s2[j] = 0;
 				}
 			}
-		}
+			if (check_valid()) {
+				int diff = get_diff();
+				if (diff < ans) {
+					ans = diff;
+				}
+			}
+		} while (next_permutation(comb, comb + N - 1));
 	}
-};
-
-int main(int argc, char **argv)
-{
-	ios::sync_with_stdio(0);
-	cin.tie(0);
-
-	cin >> N;
-	for (int i = 0; i < N; i++)
-	{
-		cin >> Section[i].man;
-	}
-	for (int i = 0; i < N; i++)
-	{
-		cin >> Section[i].cnt;
-		for (int j = 0; j < Section[i].cnt; j++)
-		{
-			cin >> temp;
-			Next[i].push_back(temp - 1);
-		}
-	}
-	ans = 987654321;
-
-	solve();
-	if (ans == 987654321)
-		ans = -1;
-
-	cout << ans << endl;
+	if (ans == INT_MAX) cout << -1;
+	else cout << ans;
 	return 0;
 }
