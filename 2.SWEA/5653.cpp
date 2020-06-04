@@ -2,10 +2,6 @@
 #include<vector>
 #include<algorithm>
 
-
-
-//#define DEB
-
 #define Disabled 2
 #define Activate 1
 #define Empty 0
@@ -25,18 +21,14 @@ int Space[450][450];
 int K, N, M;
 Info tempSepo;
 vector <Info> Sepo;
-
-bool cmp(const Info& x, const Info& y) {
-	return x.time > y.time;
-
-}
-
 int dx[4] = { -1,1,0,0 };
 int dy[4] = { 0,0,1,-1 };
 
+bool cmp(const Info& x, const Info& y) {
+	return x.time > y.time;
+}
 
 void Spread(int idx) {
-
 		for (int j = 0; j < 4; j++) {
 			if (Space[Sepo[idx].y + dy[j]][Sepo[idx].x + dx[j]] == Empty) {
 				Space[Sepo[idx].y + dy[j]][Sepo[idx].x + dx[j]] = Sepo[idx].time;
@@ -49,43 +41,31 @@ void Spread(int idx) {
 				AliveCount++;
 			}
 		}
-
 }
 
-
 void AfterOnehour() {
-
 	int xx= AliveCount;
-
 	for (int i = 0; i < xx; i++) {
 		if (Sepo[i].cnt == Sepo[i].time && Sepo[i].state == Activate) {
 			Spread(i);
 		}
-
 		Sepo[i].cnt++;
-
 		if (Sepo[i].cnt == Sepo[i].time && Sepo[i].state == Disabled ) {
 			Sepo[i].state = Activate;
 		}
-
-
 		else if (Sepo[i].cnt == 2 * Sepo[i].time && Sepo[i].state == Activate) {
 			Sepo[i].state = Dead;
 			Sepo[i].time = -1;
 			AliveCount--;
 		}
 	}
-
 }
-
 
 int main(int argc, char** argv)
 {
 	int test_case;
 	int T;
-
 	cin >> T;
-
 	for (test_case = 1; test_case <= T; ++test_case)
 	{
 		for (int i = 0; i < 400; i++) {
@@ -111,36 +91,14 @@ int main(int argc, char** argv)
 				}
 			}
 		}
-
-#ifdef DEB   //ÀÔ·Â È®ÀÎ
-		cout << "# ÀÔ·Â È®ÀÎ #" << endl;
-		for (int i = 200; i <200 + N; i++) {
-			for (int j = 200; j <200 + M; j++) {
-				cout << Space[i][j] <<' ';
-			}
-			cout << endl;
-		}
-#endif
 		for (timeCount = 1; timeCount <= K; timeCount++) {
 			for (int i = 0; i < Sepo.size(); i++) {
 				if (Sepo[i].state == Dead) Sepo.erase(Sepo.begin()+i);
 			}
 			sort(Sepo.begin(), Sepo.end(), cmp);
 			AfterOnehour();
-
-#ifdef DEB   
-			cout << timeCount << "½Ã°£ ÈÄ" << endl;
-			for (int i = 190; i < 210; i++) {
-				for (int j = 190; j < 210; j++) {
-					cout << Space[i][j] << ' ';
-				}
-				cout << endl;
-			}
-#endif
 		}
-
 		cout <<'#'<<test_case<<' '<<AliveCount<< endl;
-
 	}
-	return 0;//Á¤»óÁ¾·á½Ã ¹Ýµå½Ã 0À» ¸®ÅÏÇØ¾ßÇÕ´Ï´Ù.
+	return 0;//ì •ìƒì¢…ë£Œì‹œ ë°˜ë“œì‹œ 0ì„ ë¦¬í„´í•´ì•¼í•©ë‹ˆë‹¤.
 }

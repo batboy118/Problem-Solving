@@ -25,7 +25,6 @@ void move() {
 	int bx = B[1];
 	int by = B[0];
 	int Rflag = 0;
-	int Bflag = 0;
 	for (int i = 0; i < ans - 1; i++) {
 		int d = moves[i];
 		int rnx = rx + dx[d];
@@ -42,7 +41,6 @@ void move() {
 		int bny = by + dy[d];
 		while (m[bny][bnx] != '#') {
 			if (m[bny][bnx] == 'O') {
-				Bflag = 1;
 				return;
 			}
 			bnx = bnx + dx[d];
@@ -68,7 +66,7 @@ void move() {
 }
 
 void solve(int depth) {
-	if (ans == 1) return;
+	if (ans <= depth) return;
 	if (depth >= ans - 1) {
 		move();
 		return;
