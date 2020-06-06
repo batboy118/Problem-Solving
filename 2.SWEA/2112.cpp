@@ -1,134 +1,86 @@
 #include<iostream>
-#define MAX_D 13
-#define MAX_W 20
+#include<string.h>
+
 using namespace std;
 
-bool map[MAX_D][MAX_W];
-bool copymap[MAX_D][MAX_W];
-int D,W,K;
-int result;
-int Chemical[MAX_D];
+int D, W, K;
+int cell[13][20];
+int cp[13][20];
+int ans;
+int A[13];
+int B[13];
 
-void copy() {
+int check() {
 	for (int i = 0; i < D; i++) {
-		for (int j = 0; j < W; j++) {
-			copymap[i][j] = map[i][j];
+		if (A[i]) {
+			for (int j = 0; j < W; j++) {
+				cell[i][j] = 0;
+			}
+		}
+		else if (B[i]) {
+			for (int j = 0; j < W; j++) {
+				cell[i][j] = 1;
+			}
 		}
 	}
-}
-
-bool check(int cnt) {
-
-	bool OK = true;
-
-	for (int i = 0; i < cnt; i++) {
-		for (int j = 0; j < W; j++) {
-			copymap[Chemical[i]][j] |= 1;
-		}
-	}
-
-	for (int i = 0; i < W; i++) {
-		int countA = 0;
-		int countB = 0;
-		for (int j = 0; j < D; j++) {
-			if (copymap[j][i]) {
-				countA++;
-				countB = 0;
-			}
-			else {
-				countA=0;
-				countB ++;
-			}
-			if (countA >= K || countB >= K) {
-				break;
-			}
-
-		}
-		if (countA < K && countB < K) {
-			OK = false;
-			break;
-		}
-	}
-
-	if (OK) return OK;
-
-	OK = true;
-
-	for (int i = 0; i < cnt; i++) {
-		for (int j = 0; j < W; j++) {
-			copymap[Chemical[i]][j] &= 0;
-		}
-	}
-
-	for (int i = 0; i < W; i++) {
-		int countA = 0;
-		int countB = 0;
-		for (int j = 0; j < D; j++) {
-			if (copymap[j][i]) {
-				countA++;
-				countB = 0;
-			}
-			else {
-				countA = 0;
-				countB++;
-			}
-			if (countA >= K || countB >= K) {
-				break;
-			}
-
-		}
-		if (countA < K && countB < K) {
-			OK = false;
-			break;
-		}
-	}
-
-	return OK;
-}
-
-void solve() {
-
-	
-	//Powerset
-	for (int i = 0; i < (1 << D); i++) {
-		int cnt = 0;
-		for (int j = 0; j < D; j++) {
-			if ((1 << j) & i) {
-				Chemical[cnt] = j;
+	for (int j = 0; j < W; j++) {
+		int cnt = 1;
+		for (int i = 0; i < D - 1; i++) {
+			if (cell[i][j] == cell[i + 1][j]) {
 				cnt++;
+				if (cnt >= K) {
+					break;
+				}
+			}
+			else { cnt = 1; }
+		}
+		if (cnt < K) {
+			return 0;
+		}
+	}
+	return 1;
+}
+
+void solve(int depth, int cnt) {
+	if (cnt >= ans || depth > D) return;
+	if (depth == D) {
+		for (int i = 0; i < D; i++) {
+			for (int j = 0; j < W; j++) {
+				cell[i][j] = cp[i][j];
 			}
 		}
-		if (cnt > result) { continue; }
-		copy();
-		bool ok = check(cnt);
-		copy();
-		if (ok && result>cnt) result = cnt;
+		if (check()) {
+			ans = cnt;
+			return;
+		}
 	}
+	solve(depth + 1, cnt);
+	A[depth] = 1;
+	solve(depth + 1, cnt + 1);
+	A[depth] = 0;
+	B[depth] = 1;
+	solve(depth + 1, cnt + 1);
+	B[depth] = 0;
 }
 
 int main(int argc, char** argv)
 {
-	ios::sync_with_stdio(0);
-	cin.tie(0);
-	
-	//freopen("input.txt", "r", stdin);
-
+	int test_case;
 	int T;
-
 	cin >> T;
-
-	for (int test_case = 1; test_case <= T; ++test_case)
+	for (test_case = 1; test_case <= T; ++test_case)
 	{
 		cin >> D >> W >> K;
 		for (int i = 0; i < D; i++) {
 			for (int j = 0; j < W; j++) {
-				cin >> map[i][j];
+				cin >> cp[i][j];
 			}
 		}
-		result = 987654321;
-		solve();
-
-		cout << '#' << test_case << ' ' << result<<'\n';
+		memset(A, 0, sizeof(A));
+		memset(B, 0, sizeof(B));
+		ans = 987654321;
+		solve(0, 0);
+		cout << '#' << test_case << ' ' << ans << '\n';
 	}
-	return 0;//Á¤»óÁ¾·á½Ã ¹Ýµå½Ã 0À» ¸®ÅÏÇØ¾ßÇÕ´Ï´Ù.
+	return 0;//ì •ìƒì¢…ë£Œì‹œ ë°˜ë“œì‹œ 0ì„ ë¦¬í„´í•´ì•¼í•©ë‹ˆë‹¤.
 }
