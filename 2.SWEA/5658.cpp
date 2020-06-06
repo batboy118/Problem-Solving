@@ -20,11 +20,7 @@ int main(int argc, char** argv)
 	string str;
 	vector <int> strToInt;
 	int setOfnum[28];
-	freopen("sample_input.txt", "r", stdin);
-
 	cin >> T;
-
-
 	for (test_case = 1; test_case <= T; ++test_case)
 	{
 		cin >> N >> K;
@@ -41,23 +37,18 @@ int main(int argc, char** argv)
 		for (int i = 0; i < N; i++) setOfnum[i] = 0;
 
 		for (int i = 0; i < N; i++) {
-				int k = 1;
+			int k = 1;
 			for (int j = 0; j < lenOfnum; j++) {
-				
 				if (N <= i+j) {
 					setOfnum[i]+= (strToInt[i + j - N] * k);
 				}
 				else {
 					setOfnum[i] += (strToInt[i + j] * k);
 				}
-
 				k *= 16;
-
-				}
 			}
-
+		}
 		sort(setOfnum, setOfnum+N, desc);
-
 		int cnt = 1;
 		if (K == 1) { answer = setOfnum[0];}
 		else {
@@ -69,11 +60,7 @@ int main(int argc, char** argv)
 				}
 			}
 		}
-		
 		cout << '#' << test_case << ' ' << answer << '\n';;
-
 	}
-
-
-	return 0;//Á¤»óÁ¾·á½Ã ¹Ýµå½Ã 0À» ¸®ÅÏÇØ¾ßÇÕ´Ï´Ù.
+	return 0;//ì •ìƒì¢…ë£Œì‹œ ë°˜ë“œì‹œ 0ì„ ë¦¬í„´í•´ì•¼í•©ë‹ˆë‹¤.
 }

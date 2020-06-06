@@ -1,195 +1,167 @@
 #include<iostream>
 #include<algorithm>
-#include<vector>
-#include<cstring>
-#include<queue>
+#include<functional>
+#include<iomanip>
 
 #define STAY 0
 #define UP 1
 #define RIGHT 2
 #define DOWN 3
 #define LEFT 4
-#define endl '\n'
+
 using namespace std;
 
-
-struct InfoAP {
+int result;
+int M, N;
+struct Maninfo {
 	int x, y;
-	int C, P;
 };
 
-struct InfoMan {
+struct BCinfo {
 	int x, y;
-	int numOfAP;
-	int POWER[4];
+	int map[11][11];
+	int power;
+	int cover;
 };
-
 int dx[5] = { 0,0,1,0,-1 };
 int dy[5] = { 0,-1,0,1,0 };
-int M, A;
-int result;
-int temp;
-int map[11][11][5];
-InfoAP tempAP;
-vector <InfoAP> AP;
-InfoMan Man[2]; 
-queue <int> man1Move;
-queue <int> man2Move;
-vector <int, int> man1Power;
-vector <int, int> man2Power;
-int maxA, maxB;
 
+Maninfo A[101];
+Maninfo B[101];
 
-bool compare(pair<int, int> a,
-	pair<int, int> b) {
-	if (a.first == b.first) {
-		return a.second > b.second;
-	}
-	else {
-		return a.first > b.first;
-	}
-}
+BCinfo BC[9];
 
-void cal() {
-
-	for (int i = 0; i < 2; i++) {
-		if (map[Man[i].x][Man[i].y][4] > 0) {
-			Man[i].numOfAP = map[Man[i].x][Man[i].y][4];
-			for (int j = 0; j < 4; j++) {
-				if (map[Man[i].x][Man[i].y][j] > 0) {
-					Man[i].POWER[j] = map[Man[i].x][Man[i].y][j];
-					if (i == 0)
-						man1Power.push_back(make_pair(Man[i].POWER[j], j));
-					else
-						man2Power.push_back(make_pair(Man[i].POWER[j], j));
-				}
-				else {
-					Man[i].POWER[j] = 0;
-				}
-			}
+void Covercheck(int i, int cnt, int x, int y) {
+	BC[i].map[x][y] = BC[i].power;
+	if (cnt < BC[i].cover) {
+		if (x + dx[UP] >= 1&& x + dx[UP] <= 10 && y + dy[UP] >= 1 && y + dy[UP] <= 10) {
+			cnt++;
+			Covercheck(i, cnt, x + dx[UP], y + dy[UP]);
+			cnt--;
+		}
+		if (x + dx[RIGHT] >= 1 && x + dx[RIGHT] <= 10 && y + dy[RIGHT] >= 1 && y + dy[RIGHT] <= 10) {
+			cnt++;
+			Covercheck(i, cnt, x + dx[RIGHT], y + dy[RIGHT]);
+			cnt--;
+		}
+		if (x + dx[DOWN] >= 1 && x + dx[DOWN] <= 10 && y + dy[DOWN] >= 1 && y + dy[DOWN] <= 10) {
+			cnt++;
+			Covercheck(i, cnt, x + dx[DOWN], y + dy[DOWN]);
+			cnt--; 
+		}
+		if (x + dx[LEFT] >= 1 && x + dx[LEFT] <= 10 && y + dy[LEFT] >= 1 && y + dy[LEFT] <= 10) {
+			cnt++;
+			Covercheck(i, cnt, x + dx[LEFT], y + dy[LEFT]);
+			cnt--;
 		}
 	}
+	return;
+}
 
-	sort(man1Power.begin(), man1Power.end(), compare);
-	sort(man2Power.begin(), man2Power.end(), compare);
-
-	if (man1Power.empty() && man2Power.empty()) {}
-	else if (!man1Power.empty() && man2Power.empty()) { result += man1Power[0].first; }
-	else if (man1Power.empty() && !man2Power.empty()) { result += man2Power[0].first; }
-	else
-	{
-		if (man1Power[0].second != man2Power[0].second) {
-			result += man1Power[0].first;
-			result += man2Power[0].first;
+void Cal() {
+	int maxA=0;
+	int maxB=0;
+	int tempA = 0;
+	int tempB = 0;
+	int checkA = 0;
+	int checkB = 0;
+	for (int i = 0; i <= M; i++) {
+		checkA = 0;
+		checkB = 0;
+		maxA = 0;
+		maxB = 0;
+		for (int j = 1; j <= N; j++) {
+			tempA = BC[j].map[A[i].x][A[i].y];
+			tempB = BC[j].map[B[i].x][B[i].y];
+			if (maxA < tempA) {
+				maxA = tempA;
+				checkA = j;
+			}
+			if (maxB < tempB) {
+				maxB = tempB;
+				checkB = j;
+			}
+		}
+		if(checkA==checkB ){
+			int temp1[10] = { 0, };
+			int tempcnt1 = 0;
+			int temp2[10] = { 0, };
+			int tempcnt2 = 0;
+			for (int j = 1; j <= N; j++) {
+				if (BC[j].map[A[i].x][A[i].y] != 0) {
+					temp1[tempcnt1] = BC[j].map[A[i].x][A[i].y];
+					tempcnt1++;
+				}
+				if (BC[j].map[B[i].x][B[i].y] != 0 ) {
+					temp2[tempcnt2] = BC[j].map[B[i].x][B[i].y];
+					tempcnt2++;
+				}
+			}
+			sort(temp1, temp1 + tempcnt1, greater<int>());
+			sort(temp2, temp2 + tempcnt2, greater<int>());
+			if (tempcnt2 >= 1 && tempcnt1 >= 1) {
+				if (maxA + temp2[1] > maxB + temp1[1]) {
+					result += (maxA + temp2[1]);
+				}
+				else {
+					result += (maxB + temp1[1]);
+				}
+			}
+			else if (tempcnt1 < 1) {
+				result += (maxA + temp2[1]);
+			}
+			else {
+				result += (maxB + temp1[1]);
+			}
+			
 		}
 		else {
-			if (man1Power.size() == 1 && man2Power.size() == 1) {
-				result += man1Power[0].first;
-			}
-			else if (man1Power.size() == 1 && man2Power.size() > 1) {
-				result += man1Power[0].first;
-				result += man2Power[1].first;
-			}
-			else if (man1Power.size() > 1 && man2Power.size() == 1) {
-				result += man1Power[1].first;
-				result += man2Power[0].first;
-			}
-			else
-			{
-				if (man1Power[1].second > man2Power[1].second) {
-					result += man1Power[1].first;
-					result += man2Power[0].first;
-				}
-				else {
-					result += man1Power[0].first;
-					result += man2Power[1].first;
-				}
-			}
-		}
-
-		man1Power.clear();
-		man2Power.clear();
-	}
-}
-
-void Move() {
-	Man[0].x += dx[man1Move.front()];
-	Man[0].y += dy[man1Move.front()];
-	Man[1].x += dx[man2Move.front()];
-	Man[1].y += dy[man2Move.front()];
-	man1Move.pop();
-	man2Move.pop();
-}
-
-void coverMap() {
-	for (int i = 0; i < AP.size(); i++) {
-		for (int k = AP[i].x - AP[i].C; k <= AP[i].x + AP[i].C; k++) {
-			for (int j = AP[i].y - AP[i].C; k <= AP[i].y + AP[i].C; j++) {
-				if (abs(AP[i].x - k) + abs(AP[i].y - j) <= AP[i].C) {
-					map[j][k][i] = AP[i].P;
-					map[j][k][4]++;
-				}
-			}
+			result += (maxA + maxB);
+			maxA = 0;
+			maxB = 0;
 		}
 	}
-	
-	
-	/*
-	¶Ç´Â ±íÀÌ¸¦ ¹üÀ§°ªÀ¸·Î Á¦ÇÑÇÏ°í Àç±Í·Î ±¸ÇÏ±â.
-	*/
-}
-
-void solve() {
-	
-	coverMap();
-
-	for (int i = 0; i < M; i++) {
-		Move();
-		cal();
-	}
-
+	return;
 }
 
 
-int main(int argc, char** argv){
+int main(int argc, char** argv)
+{
 	int test_case;
 	int T;
-
-	//freopen("input.txt", "r", stdin);
+	//freopen("sample_input (1).txt", "r", stdin);
 	cin >> T;
-
-
 	for (test_case = 1; test_case <= T; ++test_case)
 	{
-		cin >> M >> A;
-
-		Man[0].x = 1; Man[0].y = 1;
-		Man[1].x = 10; Man[1].y = 10;
-		result = 0;
-
-		memset(map, -1, sizeof(map));
-
-
-		for (int i = 0; i < M; i++) {
-			cin >> temp;
-			man1Move.push(temp);
+		A[0].x = 1;
+		A[0].y = 1;
+		B[0].x = 10;
+		B[0].y = 10;
+		int dir;
+		cin >> M >> N;
+		for (int i = 1; i <= M; i++) { 			
+			cin >> dir;
+			A[i].x = A[i - 1].x + dx[dir];
+			A[i].y = A[i - 1].y + dy[dir];
 		}
-
-		for (int i = 0; i < M; i++) {
-			cin >> temp;
-			man2Move.push(temp);
+		for (int i = 1; i <= M; i++) BC[i].map[x][y] = BC[i].power;
+			cin >> dir;
+			B[i].x = B[i - 1].x + dx[dir];
+			B[i].y = B[i - 1].y + dy[dir];
 		}
-
-		for (int i = 0; i < A; i++) {
-			cin >> temp; tempAP.x = temp;
-			cin >> temp; tempAP.y = temp;
-			cin >> temp; tempAP.C = temp;
-			cin >> temp; tempAP.P = temp;
+		int cnt = 0;
+		for (int i = 1; i <= N; i++) {
+			cnt = 0;
+			cin >> BC[i].x >> BC[i].y >> BC[i].cover >> BC[i].power;
+			for (int j = 0; j <= 10; j++) {
+				for (int k = 0; k <= 10; k++)
+					BC[i].map[j][k] = 0;
+			}
+			Covercheck(i, cnt, BC[i].x, BC[i].y);
 		}
-
-		solve();
-
+		Cal();
 		cout << '#' << test_case << ' ' << result<<'\n';
+		result = 0;
 	}
-	return 0;//Á¤»óÁ¾·á½Ã ¹Ýµå½Ã 0À» ¸®ÅÏÇØ¾ßÇÕ´Ï´Ù.
+	return 0;//ì •ìƒì¢…ë£Œì‹œ ë°˜ë“œì‹œ 0ì„ ë¦¬í„´í•´ì•¼í•©ë‹ˆë‹¤.
 }

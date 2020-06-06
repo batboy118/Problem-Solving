@@ -4,7 +4,7 @@ using namespace std;
 
 //#define DEBUG
 
-//Àå¾Ö¹°
+//ìž¥ì• ë¬¼
 #define UP_RIGHT 1
 #define DOWN_RIGHT 2
 #define DOWN_LEFT 3
@@ -17,7 +17,7 @@ using namespace std;
 #define W5 10
 #define BLACKHOLE -1
 
-//ÁøÇà ¹æÇâ index
+//ì§„í–‰ ë°©í–¥ index
 #define UP 2
 #define DOWN 0
 #define RIGHT 1
@@ -46,9 +46,7 @@ int test_case;
 void Move() {
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < N; j++) {
-
 			if (Map[i][j] != 0)continue;
-
 			for (int startDir = 0; startDir < 4; startDir++) {
 				nowX = j; nowY = i;
 				dir = startDir;
@@ -56,29 +54,26 @@ void Move() {
 				int ccc = 0;
 				Flag = true;
 				if (nowX + dx[dir] < 0 || nowX + dx[dir]> N - 1 || nowY + dy[dir]<0 || nowY + dy[dir]>N - 1) continue;
-
 				while (Flag) {
-
-				
-#ifdef DEBUG
-					ccc++;
-					cout << i << ' ' << j << ' ' << ccc << "¹øÂ° : " << nowX << ", " << nowY << endl;
-#endif					
 					nowX += dx[dir];
 					nowY += dy[dir];
-					if (Map[nowY][nowX] == BLACKHOLE || (nowY == i && nowX == j)) Flag = false;
+					if (Map[nowY][nowX] == BLACKHOLE || (nowY == i && nowX == j)) Flag = false;				
+#ifdef DEBUG
+					ccc++;
+					cout << i << ' ' << j << ' ' << ccc << "ë²ˆì§¸ : " << nowX << ", " << nowY << endl;
+#endif				
 
-					//º®
+					//ë²½
 					else if (nowX<0 || nowX>N - 1 || nowY<0 || nowY>N - 1) {
 						temp++;
 						dir = (dir + 2) % 4;
 					}
-					//³×¸ðºí·°
+					//ë„¤ëª¨ë¸”ëŸ­
 					else if (Map[nowY][nowX] == SQUARE) {
 						temp++;
 						dir = (dir + 2) % 4;
 					}
-					//1~4ºí·°
+					//1~4ë¸”ëŸ­
 					else if(Map[nowY][nowX] >= 1&& Map[nowY][nowX] <=4 ){
 						if (Map[nowY][nowX] == UP_RIGHT) {
 							temp++;
@@ -129,7 +124,7 @@ void Move() {
 							}
 						}
 					}
-					//¿úÈ¦
+					//ì›œí™€
 					else if (Map[nowY][nowX] >= W1 && Map[nowY][nowX] <= W5) {
 						int WormNo = Map[nowY][nowX];
 						if (Wormhole[WormNo].x1 == nowX && Wormhole[WormNo].y1 == nowY) {
@@ -140,36 +135,24 @@ void Move() {
 							nowX = Wormhole[WormNo].x1;
 							nowY = Wormhole[WormNo].y1;
 						}
-					}
-					
-					
+					}									
 				}
-#ifdef DEBUG
-				cout <<test_case<< "############################### " << temp << endl;
-#endif		
-
 				if (Score < temp) Score = temp;
 			}
-
 		}
 	}
 }
 
 int main(int argc, char** argv)
 {
-	
 	int T;
-	freopen("input.txt", "r", stdin);//////////////////////////////////////////////////////
 	cin >> T;
-
 	for (test_case = 1; test_case <= T; ++test_case)
 	{
 		cin >> N;
-
 		for (int i = 6; i <= 10; i++) {
 			Wormhole[i].cnt = 0;
 		}
-
 		for (int i = 0; i < N; i++) {
 			for (int j = 0; j < N; j++) {
 				cin >> Map[i][j];
@@ -188,11 +171,8 @@ int main(int argc, char** argv)
 			}
 		}
 		Score = 0;
-
 		Move();
-
 		cout << "#" << test_case << ' ' << Score << endl;
-
 	}
 	return 0;
 }

@@ -28,7 +28,7 @@ void updateMap(int i, int j){
     copyMap[i][j] = cnt;
     for(int d = 0; d < 4; d++){
         int nx = j + dx[d];
-        int ny = i + dy[d];
+        int ny = i + dy[d];ㄷ
         if(nx < 0 || ny < 0 || ny >= N || nx >= M ||
             check[ny][nx] || o[ny][nx] == 0) continue;
         updateMap(ny, nx);
@@ -37,7 +37,7 @@ void updateMap(int i, int j){
 void countIsland(){
     for(int i = 0; i < N; i++){
         for(int j = 0; j < M; j++){
-            if(o[i][j] == 1 && check[i][j] == 0){
+            if(o[i][j] == 1 && check[iㄷ][j] == 0){
                 cnt++;
                 updateMap(i, j);
             }

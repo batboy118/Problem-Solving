@@ -30,8 +30,7 @@ int WAIT1[10];
 int S0[10];
 int S1[10];
 
-void calDist() {
-	for(int i =0; i<num ;i++)
+void calDist() {uu
 		{
 			P[i].stair0_dist = abs(P[i].x-S[0].x) + abs(P[i].y - S[0].y);
 			P[i].stair1_dist = abs(P[i].x - S[1].x) + abs(P[i].y - S[1].y);
@@ -41,11 +40,9 @@ void calDist() {
 void calTime() {
 	sort(S0, S0 + cnt0);
 	sort(S1, S1 + cnt1);
-
 	int timeCnt = 0;
 	int idx0 = 0; int idx1 = 0;
 	bool flag = false;
-
 	while (!flag)
 	{
 		if (idx0 == cnt0 &&idx1 == cnt1 && S[0].numOfUsing==0 && S[1].numOfUsing == 0) { flag = true; break; }
@@ -72,7 +69,6 @@ void calTime() {
 				}
 			}
 		}
-
 		if (S1[idx1] < timeCnt && S[1].numOfUsing<3 && idx1<cnt1) {
 			idx1++;
 			S[1].numOfUsing++;
@@ -86,10 +82,8 @@ void calTime() {
 			}
 		}
 	}
-
 	if (result > timeCnt) result = timeCnt;
 }
-
 void solve() {
 	
 	for (int i = 0; i < (1 << num); i++) {
@@ -97,14 +91,12 @@ void solve() {
 		cnt1 = 0;
 		for (int j = 0; j < num; j++) {
 			if (i & (1 << j)) {
-		//		S0[cnt0][1] = j;
 				S0[cnt0] = P[j].stair0_dist;
 				WAIT0[cnt0]=S[0].time;
 				cnt0++;
 			}
 			else
 			{
-		//		S1[cnt1][1] = j;
 				S1[cnt1] = P[j].stair1_dist;
 				WAIT1[cnt1] = S[1].time;
 				cnt1++;
@@ -112,8 +104,6 @@ void solve() {
 		}
 		calTime();
 	}
-
-	
 }
 
 
@@ -121,10 +111,7 @@ int main(int argc, char** argv)
 {
 	int test_case;
 	int T;
-	
-	//freopen("input.txt", "r", stdin);
 	cin >> T;
-	
 	for (test_case = 1; test_case <= T; ++test_case)
 	{
 		num = 0;
@@ -148,12 +135,9 @@ int main(int argc, char** argv)
 				}
 			}
 		}
-		
 		calDist();
 		solve();
-	
 		cout << '#'<<test_case <<' ' <<result<<'\n';
-
 	}
-	return 0;//Á¤»óÁ¾·á½Ã ¹Ýµå½Ã 0À» ¸®ÅÏÇØ¾ßÇÕ´Ï´Ù.
+	return 0;//ì •ìƒì¢…ë£Œì‹œ ë°˜ë“œì‹œ 0ì„ ë¦¬í„´í•´ì•¼í•©ë‹ˆë‹¤.
 }

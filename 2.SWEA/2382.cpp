@@ -6,9 +6,6 @@
 #define LEFT 3
 #define RIGHT 4
 
-#define DEB
-
-
 using namespace std;
 
 struct Info {
@@ -78,36 +75,9 @@ bool check_EDGE(int i) {
 }
 
 void solve() {
-
 	for (int time = 0; time < M; time++) {
-
-#ifdef DEB
-		cout << "## Biger Map ## : " << M << "시간" << endl;
-		for (int i = 0; i < N; i++) {
-			
-			for (int j = 0; j < N; j++) {
-				cout << mapBiger[i][j]<<' ';
-			}
-			cout << endl;
-		}
-
-#endif
-
-#ifdef DEB
-		cout << "## Total Map ## : " << M << "시간" << endl;
-		for (int i = 0; i < N; i++) {
-
-			for (int j = 0; j < N; j++) {
-				cout << mapTotal[i][j] << ' ';
-			}
-			cout << endl;
-		}
-
-#endif
-
 		init_Map();
 		make_next_location();
-		
 		for (int i = 0; i < K; i++) {
 			if (Gunzip[i].quantity > 0) {
 				if (check_EDGE(i)) {
@@ -144,15 +114,10 @@ void solve() {
 }
 
 int main() {
-
 	int T;
-	
 	cin >> T;
-
-
 	for (int test_case = 1; test_case <= T; test_case++) {
 		cin >> N >> M >> K;
-
 		int temp;
 		for (int i = 0; i < K; i++) {
 			cin >> temp; Gunzip[i].y=temp;
@@ -160,9 +125,7 @@ int main() {
 			cin >> temp; Gunzip[i].quantity = temp;
 			cin >> temp; Gunzip[i].dir = temp;
 		}
-
 		solve();
-
 		cout << '#' << test_case << ' ' << result<<'\n';
 	}
 	return 0;
