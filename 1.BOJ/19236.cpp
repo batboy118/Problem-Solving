@@ -56,23 +56,63 @@ void move(Fish fish[], int board[][4]) {
 	}
 }
 
-void dfs(int depth, int sum, Fish fish[], Fish& shark, int board[][4]) {
-	PRINT_ARR2(4, 4, board[i][j]);
+void copyMap(int source[][4], int dest[][4]) {
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			dest[i][j] = source[i][j];
+		}
+	}
+}
 
-	int newBoard[4][4];
+void copyFish(Fish source[], Fish dest[]) {
+	for (int i = 1; i <= 16; i++) {
+		dest[i].x = source[i].x;
+		dest[i].y = source[i].y;
+		dest[i].dir = source[i].dir;
+		dest[i].is_dead = source[i].is_dead;
+	}
+}
+
+void dfs(int sum, Fish fish[], Fish& shark, int board[][4]) {
+	int copiedBoard[4][4];
+	Fish copiedFish[17];
+
+
+	//cout << "----------------------------" << endl;
+	//PRINT_ARR2(4, 4, board[i][j] << "(" << fish[board[i][j]].dir << ")");
+
 	move(fish, board);
-	PRINT_ARR2(4, 4, board[i][j]);
 
-	//for (int i = 1; i <= 4; i++) {
-	//	int ny = shark.y + dy[shark.dir] * i;
-	//	int nx = shark.x + dx[shark.dir] * i;
-	//	if (isEdge(ny, nx)) {
-	//		if (sum > cnt) cnt = sum;
-	//		return;
-	//	}
+	//cout << "----------------------------" << endl;
+	//cout << "shark : " << shark.dir << "/" << shark.x << "," << shark.y << endl;
+	//cout << sum << endl;
+	//PRINT_ARR2(4, 4, board[i][j] << "(" << fish[board[i][j]].dir<< ")");
 
-	//	if(board)
-	//}
+	copyMap(board, copiedBoard);
+	copyFish(fish, copiedFish);
+	if (sum > cnt) cnt = sum;
+	for (int i = 1; i <= 4; i++) {
+		int ny = shark.y + dy[shark.dir] * i;
+		int nx = shark.x + dx[shark.dir] * i;
+		if (isEdge(ny, nx)) {
+			return;
+		}
+		if (board[ny][nx] == 0) continue;
+		int target = board[ny][nx];
+		board[ny][nx] = -1;
+		board[shark.y][shark.x] = 0;
+
+		Fish tempShark;
+		tempShark.y = ny;
+		tempShark.x = nx;
+		tempShark.dir = fish[target].dir;
+		fish[target].is_dead = 1;
+
+		dfs(sum + target, fish, tempShark, board);
+
+		copyMap(copiedBoard, board);
+		copyFish(copiedFish, fish);
+	}
 }
 
 int main() {
@@ -93,7 +133,8 @@ int main() {
 	fish[board[0][0]].is_dead = 1;
 	cnt = board[0][0];
 	board[0][0] = -1; //상어 -1
-	dfs(0, cnt, fish, shark, board);
+	//PRINT_ARR2(4, 4, board[i][j]);
+	dfs(cnt, fish, shark, board);
 	cout << cnt;
 	return 0;
 }

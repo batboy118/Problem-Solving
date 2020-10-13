@@ -138,13 +138,13 @@ int main() {
 	cnt = 1;
 	//cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
 	//PRINT_ARR2(N,N, board[i][j].shark)
-	while (r != 1 && cnt <= 1000) {
-		cnt++;
+	while (r != 1 && cnt <= 1001) {
+        cnt++;
 		move();
 		//cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
 		//PRINT_ARR2(N, N, board[i][j].shark)
 	}
-	if (cnt > 1000) cout << -1;
+	if (cnt > 1001) cout << -1;
 	else cout << --cnt;
 	return 0;
 }
